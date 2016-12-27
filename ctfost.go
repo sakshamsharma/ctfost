@@ -16,7 +16,7 @@ func main() {
 
 	progname = os.Getenv("PROG_NAME")
 	if progname == "" {
-		progname = "service"
+		progname = "program/service"
 	}
 
 	port, err := strconv.Atoi(os.Getenv("PROG_PORT"))
