@@ -32,7 +32,10 @@ func main() {
 }
 
 func handler(scon *net.TCPConn) {
+    defer scon.Close()
+
 	nfile, err := scon.File()
+	defer nfile.Close()
 
 	if err != nil {
 		logger.Error.Println("Error getting file from network: ", err.Error())
@@ -50,7 +53,4 @@ func handler(scon *net.TCPConn) {
 	}
 
 	_, err = process.Wait()
-
-	scon.Close()
-	nfile.Close()
 }
