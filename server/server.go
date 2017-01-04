@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/sakshamsharma/ctfost/logger"
+	"../logger"
 )
 
 type Server struct {

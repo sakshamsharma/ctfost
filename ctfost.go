@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"strconv"
 
-	"github.com/sakshamsharma/ctfost/logger"
-	"github.com/sakshamsharma/ctfost/server"
+	"./logger"
+	"./server"
 )
 
 var r *rand.Rand
