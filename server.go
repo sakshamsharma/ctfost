@@ -1,11 +1,9 @@
-package server
+package main
 
 import (
 	"net"
 	"os"
 	"strconv"
-
-	"../logger"
 )
 
 type Server struct {
@@ -15,7 +13,7 @@ type Server struct {
 }
 
 func (s Server) Listen(handler func(*net.TCPConn)) error {
-	logger.Init()
+	Init()
 
 	addr := net.TCPAddr{
 		IP:   net.ParseIP(s.HostName),
@@ -26,13 +24,13 @@ func (s Server) Listen(handler func(*net.TCPConn)) error {
 		net.ListenTCP(s.ConnectionType, &addr)
 
 	if err != nil {
-		logger.Error.Println("Error listening: ", err.Error())
+		Error.Println("Error listening: ", err.Error())
 		os.Exit(1)
 	}
 
 	defer socket.Close()
 
-	logger.Info.Println("Listening on " + s.HostName + ":" + strconv.Itoa(s.PortNumber))
+	Info.Println("Listening on " + s.HostName + ":" + strconv.Itoa(s.PortNumber))
 	for {
 		// Listen for an incoming connection.
 		conn, err := socket.AcceptTCP()
