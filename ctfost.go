@@ -1,23 +1,20 @@
 package main
 
 import (
+	"math/rand"
 	"net"
 	"os"
+	"os/exec"
 	"strconv"
 
 	"github.com/sakshamsharma/ctfost/logger"
 	"github.com/sakshamsharma/ctfost/server"
 )
 
-var progname string
+var r *rand.Rand
 
 func main() {
 	logger.Init()
-
-	progname = os.Getenv("PROG_NAME")
-	if progname == "" {
-		progname = "program/service"
-	}
 
 	port, err := strconv.Atoi(os.Getenv("PROG_PORT"))
 	if err != nil {
@@ -29,10 +26,12 @@ func main() {
 		logger.Error.Println("Error accepting: ", err.Error())
 		os.Exit(1)
 	}
+
+	r = rand.New(rand.NewSource(99))
 }
 
 func handler(scon *net.TCPConn) {
-    defer scon.Close()
+	defer scon.Close()
 
 	nfile, err := scon.File()
 	defer nfile.Close()
@@ -42,10 +41,15 @@ func handler(scon *net.TCPConn) {
 		return
 	}
 
+	userId := r.Int31()%40000 + 2000
+
+	exec.Command("user-create.sh", string(userId)).Run()
+	defer exec.Command("user-delete.sh", string(userId)).Run()
+
 	var procattr os.ProcAttr
 	procattr.Files = []*os.File{nfile, nfile, nfile}
 
-	process, err := os.StartProcess(progname, []string{}, &procattr)
+	process, err := os.StartProcess("user-run.sh", []string{}, &procattr)
 
 	if err != nil {
 		logger.Error.Println("Start process failed:" + err.Error())

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sudo -u ctfman
+userdel ctf-$1
