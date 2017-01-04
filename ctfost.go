@@ -21,13 +21,16 @@ func main() {
 		port = 4002
 	}
 
+	r = rand.New(rand.NewSource(99))
+
+	// Cannot be done in the docker build process
+	exec.Command("cgconfigparser", "-l", "/etc/cgconfig.conf").Run()
+
 	err = server.Server{"0.0.0.0", port, "tcp"}.Listen(handler)
 	if err != nil {
 		logger.Error.Println("Error accepting: ", err.Error())
 		os.Exit(1)
 	}
-
-	r = rand.New(rand.NewSource(99))
 }
 
 func handler(scon *net.TCPConn) {
