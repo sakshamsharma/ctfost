@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sudo -u ctf-$1 cgexec -g memory:ctflimit ~/${PROG_NAME:-service}
+cgexec -g memory:ctflimit bash -c "sudo -u ctf-${1} /home/ctf-${1}/${PROG_NAME:-service}"

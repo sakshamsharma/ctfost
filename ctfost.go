@@ -41,15 +41,16 @@ func handler(scon *net.TCPConn) {
 		return
 	}
 
-	userId := r.Int31()%40000 + 2000
+	userId := int(r.Int31()%40000 + 2000)
 
 	exec.Command("user-create.sh", string(userId)).Run()
 	defer exec.Command("user-delete.sh", string(userId)).Run()
 
 	var procattr os.ProcAttr
 	procattr.Files = []*os.File{nfile, nfile, nfile}
+	args := []string{"", strconv.Itoa(userId)}
 
-	process, err := os.StartProcess("user-run.sh", []string{}, &procattr)
+	process, err := os.StartProcess("user-run.sh", args, &procattr)
 
 	if err != nil {
 		Error.Println("Start process failed:" + err.Error())
