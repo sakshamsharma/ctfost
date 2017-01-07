@@ -43,8 +43,10 @@ func handler(scon *net.TCPConn) {
 
 	userId := int(r.Int31()%40000 + 2000)
 
-	exec.Command("user-create.sh", string(userId)).Run()
-	defer exec.Command("user-delete.sh", string(userId)).Run()
+	_, errU := exec.Command("./user-create.sh", strconv.Itoa(userId)).Output()
+	if errU != nil {
+		Error.Println("Error creating user: ", errU.Error())
+	}
 
 	var procattr os.ProcAttr
 	procattr.Files = []*os.File{nfile, nfile, nfile}
@@ -58,4 +60,9 @@ func handler(scon *net.TCPConn) {
 	}
 
 	_, err = process.Wait()
+	Info.Println("Exiting connection for user: ", userId)
+	_, errD := exec.Command("./user-delete.sh", strconv.Itoa(userId)).Output()
+	if errD != nil {
+		Error.Println("Could not delete user: ", errD.Error())
+	}
 }
